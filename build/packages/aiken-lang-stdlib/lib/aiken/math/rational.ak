@@ -304,7 +304,7 @@ test floor_1() {
 ///
 /// ```aiken
 /// expect Some(x) = rational.new(2, 3)
-/// rational.ceil(x) == 0
+/// rational.ceil(x) == 1
 ///
 /// expect Some(y) = rational.new(44, 14)
 /// rational.ceil(y) == 4
@@ -334,7 +334,7 @@ test ceil_1() {
   }
 }
 
-/// Returns the proper fraction of a given `Rational` `r`. That is, a pair of
+/// Returns the proper fraction of a given `Rational` `r`. That is, a 2-tuple of
 /// an `Int` and `Rational` (n, f) such that:
 ///
 /// - `r = n + f`;

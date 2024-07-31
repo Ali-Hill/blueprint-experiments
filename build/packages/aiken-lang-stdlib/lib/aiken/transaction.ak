@@ -59,12 +59,45 @@ pub type Transaction {
   fee: Value,
   mint: MintedValue,
   certificates: List<Certificate>,
-  withdrawals: Dict<StakeCredential, Int>,
+  withdrawals: Pairs<StakeCredential, Int>,
   validity_range: ValidityRange,
   extra_signatories: List<Hash<Blake2b_224, VerificationKey>>,
-  redeemers: Dict<ScriptPurpose, Redeemer>,
+  redeemers: Pairs<ScriptPurpose, Redeemer>,
   datums: Dict<Hash<Blake2b_256, Data>, Data>,
   id: TransactionId,
+}
+
+/// A placeholder / empty `Transaction` to serve as a base in a transaction
+/// builder. This is particularly useful for constructing test transactions.
+///
+/// Every field is empty or null, and we have in particular:
+///
+/// ```aiken
+/// use aiken/transaction
+///
+/// transaction.placeholder().id == TransactionId {
+///   hash: #"0000000000000000000000000000000000000000000000000000000000000000",
+/// }
+///
+/// transaction.placeholder().validity_range == interval.everything()
+/// ```
+pub fn placeholder() -> Transaction {
+  Transaction {
+    inputs: [],
+    reference_inputs: [],
+    outputs: [],
+    fee: value.zero(),
+    mint: value.zero() |> value.to_minted_value(),
+    certificates: [],
+    withdrawals: [],
+    validity_range: interval.everything(),
+    extra_signatories: [],
+    redeemers: [],
+    datums: dict.new(),
+    id: TransactionId {
+      hash: #"0000000000000000000000000000000000000000000000000000000000000000",
+    },
+  }
 }
 
 /// An interval of POSIX time, measured in number milliseconds since 1970-01-01T00:00:00Z.
@@ -150,26 +183,26 @@ pub fn find_datum(
   datums
     |> dict.get(datum_hash)
     |> option.or_try(
-         fn(_) {
-           outputs
-             |> list.filter_map(
-                  fn(output) {
-                    when output.datum is {
-                      InlineDatum(data) ->
-                        if
-                        blake2b_256(builtin.serialise_data(data)) == datum_hash{
-                        
-                          Some(data)
-                        } else {
-                          None
-                        }
-                      _ -> None
-                    }
-                  },
-                )
-             |> list.head
-         },
-       )
+        fn() {
+          outputs
+            |> list.filter_map(
+                fn(output) {
+                  when output.datum is {
+                    InlineDatum(data) ->
+                      if
+                      blake2b_256(builtin.serialise_data(data)) == datum_hash{
+                      
+                        Some(data)
+                      } else {
+                        None
+                      }
+                    _ -> None
+                  }
+                },
+              )
+            |> list.head
+        },
+      )
 }
 
 /// Find all outputs that are paying into the given script hash, if any. This is useful for
@@ -180,12 +213,12 @@ pub fn find_script_outputs(
 ) -> List<Output> {
   outputs
     |> list.filter(
-         fn(output) {
-           when output.address.payment_credential is {
-             ScriptCredential(addr_script_hash) ->
-               script_hash == addr_script_hash
-             VerificationKeyCredential(_) -> False
-           }
-         },
-       )
+        fn(output) {
+          when output.address.payment_credential is {
+            ScriptCredential(addr_script_hash) ->
+              script_hash == addr_script_hash
+            VerificationKeyCredential(_) -> False
+          }
+        },
+      )
 }

@@ -1,5 +1,60 @@
 # Changelog
 
+## v1.9.0 - 2024-05-24
+
+### Added
+
+- A new module [`aiken/pairs`](https://aiken-lang.github.io/stdlib/aiken/pairs.html) to work with associative lists (a.k.a. `Pairs`).
+
+### Changed
+
+- **BREAKING-CHANGE**<br/>
+  Specialized all `Dict`'s key to `ByteArray`, and thus remove the need for passing an extra comparison function in many functions. `Dict` are however still specialized with a phantom type for keys.
+
+- **BREAKING-CHANGE**<br/>
+  Few functions from `Dict` have been renamed for consistency:
+  - `from_list` -> `from_pairs`
+  - `from_ascending_list` -> `from_ascending_pairs`
+  - `to_list` -> `to_pairs`
+
+### Removed
+
+N/A
+
+## v1.8.0 - 2024-03-28
+
+### Added
+
+- [`value.reduce`](https://aiken-lang.github.io/stdlib/aiken/transaction/value.html#reduce) to efficiently fold over a value and its elements.
+
+- [`value.from_asset_list`](https://aiken-lang.github.io/stdlib/aiken/transaction/value.html#from_asset_list) to turn an asset list into a Value while enforcing invariants expected of `Value`.
+
+- [`math.is_sqrt`](https://aiken-lang.github.io/stdlib/aiken/math.html#is_sqrt) as a more efficient alternative to `sqrt`.
+
+### Changed
+
+- Disclaimers in documentation to [`bytearray.to_string`](https://aiken-lang.github.io/stdlib/aiken/bytearray.html#to_string) and [`string.from_bytearray`](https://aiken-lang.github.io/stdlib/aiken/string.html#from_bytearray) regarding UTF-8 encoding.
+
+### Removed
+
+N/A
+
+## v1.7.0 - 2023-11-07
+
+### Added
+
+- [`list.index_of`](https://aiken-lang.github.io/stdlib/aiken/list.html#index_of): For getting a values index in a list.
+- [`transaction.placeholder`](https://aiken-lang.github.io/stdlib/aiken/transaction.html#placeholder): For constructing test transactions.
+- [`transaction.value.is_zero`](https://aiken-lang.github.io/stdlib/aiken/transaction/value.html#is_zero): For checking whether a value is null.
+
+### Changed
+
+- [`value.to_minted_value`](https://aiken-lang.github.io/stdlib/aiken/transaction/value.html#to_minted_value) now correctly preserves the invariant of `MintedValue`: it always contain a null quantity of Ada.
+
+### Removed
+
+N/A
+
 ## v1.6.0 - 2023-09-08
 
 ### Added

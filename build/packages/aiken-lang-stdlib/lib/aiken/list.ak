@@ -68,7 +68,7 @@ test any_3() {
 /// list.count([1, 2, 3], fn(a) { n > 5 }) == 0
 /// ```
 pub fn count(self: List<a>, predicate: fn(a) -> Bool) -> Int {
-  foldl(
+  foldr(
     self,
     0,
     fn(item, total) {
@@ -555,6 +555,46 @@ test has_2() {
 
 test has_3() {
   has([], 14) == False
+}
+
+/// Gets the index of an element of a list, if any. Otherwise, returns None.
+///
+/// ```aiken
+/// list.index_of([1, 5, 2], 2) == Some(2)
+/// list.index_of([1, 7, 3], 4) == None
+/// list.index_of([1, 0, 9, 6], 6) == 3
+/// list.index_of([], 6) == None
+/// ```
+pub fn index_of(self: List<a>, elem: a) -> Option<Int> {
+  do_index_of(self, elem, 0)
+}
+
+fn do_index_of(self: List<a>, elem: a, i: Int) -> Option<Int> {
+  when self is {
+    [] -> None
+    [x, ..xs] ->
+      if x == elem {
+        Some(i)
+      } else {
+        do_index_of(xs, elem, i + 1)
+      }
+  }
+}
+
+test index_of_1() {
+  index_of([1, 5, 2], 2) == Some(2)
+}
+
+test index_of_2() {
+  index_of([1, 7, 3], 4) == None
+}
+
+test index_of_3() {
+  index_of([1, 0, 9, 6], 6) == Some(3)
+}
+
+test index_of_4() {
+  index_of([], 6) == None
 }
 
 /// Get the first element of a list
