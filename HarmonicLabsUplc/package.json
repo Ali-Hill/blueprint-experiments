@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@harmoniclabs/uplc": "^1.2.4"
+  }
+}
